@@ -12,8 +12,14 @@ class CrazyRglCfg(config: Config) {
 }
 
 class GuiConfig(config: Config) {
-  val windowWidth = config.getInt("window.width")
-  val windowHeight = config.getInt("window.height")
+  val windowConfig: WindowConfig = new WindowConfig(config.getConfig("window"))
+  val repaintRate: Int = config.getInt("repaint-rate")
+}
+
+class WindowConfig(config: Config) {
+  val width: Int = config.getInt("width")
+  val height: Int = config.getInt("height")
+  val title: String = config.getString("title")
 }
 
 object ConfigExtension extends ExtensionId[ConfigExtensionImpl] with ExtensionIdProvider {

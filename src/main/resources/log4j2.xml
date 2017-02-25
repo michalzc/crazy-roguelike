@@ -13,7 +13,7 @@
                         }
                         ]]>
                     </Script>
-                    <PatternMatch key="akka" pattern="[%-5level] %d{HH:mm:ss.SSS} [%X{sourceThread}] [%X{akkaTimestamp}] [%X{akkaSource}] [%logger{1.}] - %msg%n"/>
+                    <PatternMatch key="akka" pattern="[%-5level] %d{HH:mm:ss.SSS} [%t] [%X{sourceThread}] [%X{akkaTimestamp}] [%X{akkaSource}] [%logger{1.}] - %msg%n"/>
                 </ScriptPatternSelector>
             </PatternLayout>
         </Console>

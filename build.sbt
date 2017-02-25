@@ -20,3 +20,5 @@ libraryDependencies ++= Seq(
 )
 
 scalacOptions += "-feature"
+fork in Test := true
+fork in run := true

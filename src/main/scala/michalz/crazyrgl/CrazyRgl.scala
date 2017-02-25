@@ -22,13 +22,12 @@ object CrazyRgl extends App with LazyLogging {
 
 
   sys.addShutdownHook {
-    logger.info("In shutdown hook")
     Await.ready(system.terminate(), Duration.Inf)
   }
 
   system.whenTerminated.onComplete {
     case Success(termination) =>
-      logger.info(s"Terminating application: ${termination}")
+      logger.info(s"Terminating application: $termination")
 
     case Failure(ex) =>
       logger.error("Application terminated", ex)

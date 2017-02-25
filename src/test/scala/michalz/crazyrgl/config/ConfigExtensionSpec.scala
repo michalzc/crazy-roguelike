@@ -13,12 +13,13 @@ class ConfigExtensionSpec extends FlatSpec with Matchers {
     cfg shouldBe a[ConfigExtensionImpl]
   }
 
-  it should "contains proper gui config" in {
+  it should "contains proper window config" in {
     val cfg = ConfigExtension(system)
-    val guiCfg = cfg.crazyRglCfg.guiConfig
+    val windowCfg = cfg.crazyRglCfg.guiConfig.windowConfig
 
-    guiCfg shouldBe a[GuiConfig]
-    guiCfg.windowWidth shouldBe 800
-    guiCfg.windowHeight shouldBe 600
+    windowCfg shouldBe a[WindowConfig]
+    windowCfg.width shouldBe 800
+    windowCfg.height shouldBe 600
+    windowCfg.title shouldBe "Crazy Roguelike"
   }
 }

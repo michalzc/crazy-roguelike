@@ -1,31 +1,35 @@
 package michalz.crazyrgl.actors
 
-import akka.actor.{Actor, ActorLogging, Cancellable, Props}
-import michalz.crazyrgl.actors.GameWindowActor.Tick
+import akka.actor.{Actor, ActorLogging, Props}
+import michalz.crazyrgl.actors.CrazyRglActor.StopRequest
+import michalz.crazyrgl.actors.GameWindowActor.WindowClosed
 import michalz.crazyrgl.config.ConfigExtension
-
-import scala.concurrent.duration.{Duration, DurationInt}
+import michalz.crazyrgl.gui.{GraphicState, MainWindow}
 
 class GameWindowActor extends Actor with ActorLogging {
 
   var state: Option[WindowState] = None
 
   def receive: Receive = {
-    case Tick =>
-      log.debug("Tick received")
+
+    case WindowClosed =>
+      log.debug("Window closed")
+      context.parent ! StopRequest
   }
 
-
-
-  override def preStart = {
+  override def preStart: Unit = {
     val cfg = ConfigExtension(context.system)
-    val scheduler = context.system.scheduler.schedule(Duration.Zero, 50.milliseconds, self, Tick)(context.dispatcher)
+    val graphicState = new GraphicState
+    val window = new MainWindow(cfg.crazyRglCfg.guiConfig, self)
+    window.init()
 
-    state = Some(WindowState(scheduler))
+    state = Some(WindowState(window, graphicState))
   }
 
-  override def postStop = {
-    state.foreach(_.cleanUp)
+  override def postStop: Unit = {
+    log.info("Closing window")
+    state.foreach(_.cleanUp())
+    state = None
   }
 
 }
@@ -33,13 +37,14 @@ class GameWindowActor extends Actor with ActorLogging {
 object GameWindowActor {
   def props: Props = Props(classOf[GameWindowActor])
 
-  case object Tick
+  case object WindowClosed
 }
 
 case class WindowState(
-  scheduler: Cancellable
+  window:    MainWindow,
+  graphicState: GraphicState
 ) {
-  def cleanUp: Unit = {
-    scheduler.cancel()
+  def cleanUp(): Unit = {
+    window.closeWindow()
   }
 }
